@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @Entity
 @NoArgsConstructor
-public class Follows {
+public class Follow {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
