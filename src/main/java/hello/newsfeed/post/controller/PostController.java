@@ -4,8 +4,6 @@ import hello.newsfeed.post.dto.PostCreateRequest;
 import hello.newsfeed.post.dto.PostResponse;
 import hello.newsfeed.post.dto.PostUpdateRequest;
 import hello.newsfeed.post.service.PostService;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,11 +20,9 @@ public class PostController {
     // 피드 생성
     @PostMapping
     public ResponseEntity<PostResponse> createPost(
-            @RequestBody PostCreateRequest postCreateRequest,
-            HttpServletRequest request
+            @RequestBody PostCreateRequest postCreateRequest
     ) {
-            HttpSession session = request.getSession();
-            Long userId = (Long) session.getAttribute("userId");
+        Long userId = 1L;
         return ResponseEntity.ok(postService.createPost(userId, postCreateRequest));
     }
 
@@ -45,27 +41,22 @@ public class PostController {
     }
 
     // 피드 수정
-    @PutMapping("{postId}")
+    @PutMapping("/{postId}")
     public ResponseEntity<PostResponse> updatePost(
             @PathVariable Long postId,
-            @RequestBody PostUpdateRequest postUpdateRequest,
-            HttpServletRequest request
+            @RequestBody PostUpdateRequest postUpdateRequest
     ) {
-        HttpSession session = request.getSession();
-        Long userId = (Long) session.getAttribute("userId");
+        Long userId = 1L;
         return ResponseEntity.ok(postService.updatePost(userId, postId, postUpdateRequest));
     }
 
     // 피드 삭제
     @DeleteMapping("/{postId}")
     public ResponseEntity<Void> deletePost(
-            @PathVariable Long postId,
-            @RequestBody PostUpdateRequest postUpdateRequest,
-            HttpServletRequest request
+            @PathVariable Long postId
     ) {
-        HttpSession session = request.getSession();
-        Long userId = (Long) session.getAttribute("userId");
-        postService.deletePost(postId, userId);
+        Long userId = 1L;
+        postService.deletePost(userId, postId);
         return ResponseEntity.ok().build();
     }
 }
