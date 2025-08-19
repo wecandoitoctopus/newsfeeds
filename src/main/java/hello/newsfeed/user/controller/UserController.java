@@ -8,8 +8,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.net.URI;
-
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/users")
@@ -60,7 +58,8 @@ public class UserController {
     public ResponseEntity<UserResponse> patchProfileImage(@RequestHeader("X-USER-ID") Long userId,
                                                           @RequestBody @Valid UpdateProfileImagePatchRequest req) {
         return users.findById(userId).map(u -> {
-            u.changeProfileImage(req.profileImage());
+            String v = (req.profileImage() == null || req.profileImage().isBlank()) ? null : req.profileImage();
+            u.changeProfileImage(v);
             return ResponseEntity.ok(toDto(users.save(u)));
         }).orElseGet(() -> ResponseEntity.notFound().build());
     }
