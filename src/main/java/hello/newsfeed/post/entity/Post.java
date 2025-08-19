@@ -18,9 +18,12 @@ public class Post extends BaseEntity {
     // 일단 이미지를 스트링으로 대체하겠습니다.
     private String postImage;
 
-    public Post(String title, String content, String postImage) {
+    private Post(String title, String content, String postImage) {
         this.title = title;
         this.content = content;
         this.postImage = postImage;
+    }
+    public static Post createPost(String title, String content, String postImage) {
+        return new Post(title, content, postImage);
     }
 }
