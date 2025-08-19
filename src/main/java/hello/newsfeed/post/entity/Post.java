@@ -1,5 +1,6 @@
 package hello.newsfeed.post.entity;
 
+import hello.newsfeed.post.dto.PostUpdateRequest;
 import hello.newsfeed.user.entity.User;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -31,5 +32,11 @@ public class Post extends BaseEntity {
     }
     public static Post createPost(String title, String content, String postImage, User user) {
         return new Post(title, content, postImage, user);
+    }
+
+    public void updateAll(PostUpdateRequest postUpdateRequest) {
+        this.title = postUpdateRequest.getTitle();
+        this.content = postUpdateRequest.getContent();
+        this.postImage = postUpdateRequest.getPostImage();
     }
 }
