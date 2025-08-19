@@ -6,10 +6,7 @@ import hello.newsfeed.post.dto.PostUpdateRequest;
 import hello.newsfeed.post.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -21,6 +18,7 @@ public class PostController {
     private final PostService postService;
 
     // 피드 생성
+    @PostMapping
     public ResponseEntity<PostResponse> createPost(
             @RequestBody PostCreateRequest postCreateRequest
     ) {
@@ -29,11 +27,13 @@ public class PostController {
     }
 
     // 피드 전체 조회
+    @GetMapping
     public ResponseEntity<List<PostResponse>> getAll() {
         return ResponseEntity.ok(postService.getAll());
     }
 
     // 피드 단일 조회
+    @GetMapping("{postId}")
     public ResponseEntity<PostResponse> getPost(
             @PathVariable Long postId
     ) {
@@ -41,6 +41,7 @@ public class PostController {
     }
 
     // 피드 수정
+    @PutMapping("{postId}")
     public ResponseEntity<PostResponse> updatePost(
             @PathVariable Long postId,
             @RequestBody PostUpdateRequest postUpdateRequest
@@ -50,6 +51,7 @@ public class PostController {
     }
 
     // 피드 삭제
+    @DeleteMapping("/{postId}")
     public ResponseEntity<Void> deletePost(
             @PathVariable Long postId,
             @RequestBody PostUpdateRequest postUpdateRequest
