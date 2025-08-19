@@ -57,6 +57,6 @@ public class PostController {
     ) {
         Long userId = 1L;
         postService.deletePost(userId, postId);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
     }
 }
