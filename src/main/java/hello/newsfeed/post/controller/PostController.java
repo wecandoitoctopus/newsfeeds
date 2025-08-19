@@ -4,6 +4,7 @@ import hello.newsfeed.post.dto.PostCreateRequest;
 import hello.newsfeed.post.dto.PostResponse;
 import hello.newsfeed.post.dto.PostUpdateRequest;
 import hello.newsfeed.post.service.PostService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,7 +21,7 @@ public class PostController {
     // 피드 생성
     @PostMapping
     public ResponseEntity<PostResponse> createPost(
-            @RequestBody PostCreateRequest postCreateRequest
+            @Valid @RequestBody PostCreateRequest postCreateRequest
     ) {
         Long userId = 1L;
         return ResponseEntity.ok(postService.createPost(userId, postCreateRequest));
@@ -44,7 +45,7 @@ public class PostController {
     @PutMapping("/{postId}")
     public ResponseEntity<PostResponse> updatePost(
             @PathVariable Long postId,
-            @RequestBody PostUpdateRequest postUpdateRequest
+            @Valid @RequestBody PostUpdateRequest postUpdateRequest
     ) {
         Long userId = 1L;
         return ResponseEntity.ok(postService.updatePost(userId, postId, postUpdateRequest));
