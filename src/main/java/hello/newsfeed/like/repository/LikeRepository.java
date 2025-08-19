@@ -1,7 +1,27 @@
 package hello.newsfeed.like.repository;
 
 import hello.newsfeed.like.entity.Like;
+import hello.newsfeed.user.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 public interface LikeRepository extends JpaRepository<Like, Long> {
+
+    //조회
+    Long countByPostId(@Param("postId") Long postId);
+
+    //확인
+    boolean existsByUserAndPostId(User user, Long postId);
+
+    //추가
+    @Modifying
+    @Query(value = "INSERT INTO LIKES(post_id, user_id) VALUES(:postId, :userId)", nativeQuery = true)
+    void Like(@Param("userId") Long userId, @Param("postId") Long postId);
+
+    //취소
+    @Modifying
+    @Query(value = "DELETE FROM likes WHERE post_id = :postId AND user_id = :userId", nativeQuery = true)
+    void UnLike(@Param("userId") Long userId, @Param("postId") Long postId);
 }
