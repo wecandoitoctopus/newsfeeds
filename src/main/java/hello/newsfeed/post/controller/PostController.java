@@ -4,6 +4,8 @@ import hello.newsfeed.post.dto.PostCreateRequest;
 import hello.newsfeed.post.dto.PostResponse;
 import hello.newsfeed.post.dto.PostUpdateRequest;
 import hello.newsfeed.post.service.PostService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,9 +22,11 @@ public class PostController {
     // 피드 생성
     @PostMapping
     public ResponseEntity<PostResponse> createPost(
-            @RequestBody PostCreateRequest postCreateRequest
+            @RequestBody PostCreateRequest postCreateRequest,
+            HttpServletRequest request
     ) {
-        Long userId = 1L;
+            HttpSession session = request.getSession();
+            Long userId = (Long) session.getAttribute("userId");
         return ResponseEntity.ok(postService.createPost(userId, postCreateRequest));
     }
 
@@ -44,9 +48,11 @@ public class PostController {
     @PutMapping("{postId}")
     public ResponseEntity<PostResponse> updatePost(
             @PathVariable Long postId,
-            @RequestBody PostUpdateRequest postUpdateRequest
+            @RequestBody PostUpdateRequest postUpdateRequest,
+            HttpServletRequest request
     ) {
-        Long userId = 1L;
+        HttpSession session = request.getSession();
+        Long userId = (Long) session.getAttribute("userId");
         return ResponseEntity.ok(postService.updatePost(userId, postId, postUpdateRequest));
     }
 
@@ -54,9 +60,11 @@ public class PostController {
     @DeleteMapping("/{postId}")
     public ResponseEntity<Void> deletePost(
             @PathVariable Long postId,
-            @RequestBody PostUpdateRequest postUpdateRequest
+            @RequestBody PostUpdateRequest postUpdateRequest,
+            HttpServletRequest request
     ) {
-        Long userId = 1L;
+        HttpSession session = request.getSession();
+        Long userId = (Long) session.getAttribute("userId");
         postService.deletePost(postId, userId);
         return ResponseEntity.ok().build();
     }
