@@ -1,5 +1,6 @@
 package hello.newsfeed.post.entity;
 
+import hello.newsfeed.BaseEntity;
 import hello.newsfeed.post.dto.PostUpdateRequest;
 import hello.newsfeed.user.entity.User;
 import jakarta.persistence.*;

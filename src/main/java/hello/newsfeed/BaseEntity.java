@@ -1,4 +1,4 @@
-package hello.newsfeed.post.entity;
+package hello.newsfeed;
 
 import jakarta.persistence.*;
 import lombok.Getter;
