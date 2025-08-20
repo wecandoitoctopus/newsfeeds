@@ -43,4 +43,25 @@ public class AuthController {
                 .body(AuthResponse.success("로그인 성공", result));
     }
 
+    // 회원탈퇴 //
+    @DeleteMapping("/auth/me")
+    public ResponseEntity<AuthResponse<Void>> deleteMe(
+            HttpServletRequest request,
+            @RequestParam String password
+    ) {
+        // 세션에서 유저 아이디 가져오기
+        HttpSession session = request.getSession(false); // false -> 세션 없으면 null 반환
+        if (session == null || session.getAttribute("LOGIN_USER") == null) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "로그인이 필요합니다.");
+        }
+
+        Long userId = (Long) session.getAttribute("LOGIN_USER");
+
+        // 서비스 호출
+        authService.deleteMe(userId, password);
+
+        return ResponseEntity.ok(
+                AuthResponse.success("회원탈퇴 성공",null)
+        );
+    }
 }

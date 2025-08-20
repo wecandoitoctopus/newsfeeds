@@ -83,4 +83,27 @@ public class AuthService {
 
         return new SignResponse(user.getId(), user.getName(),user.getEmail());           // 인증 성공 시 이름, 이메일 담아 반환
     }
+
+    // 회원 탈퇴 //
+    @Transactional
+    public ResponseEntity<AuthResponse<Void>> deleteMe(Long userId, String password) {
+        // 1. 사용자 조회 -> 계정 존재 여부 확인 //
+        User user = userRepository.findById(userId).orElseThrow(
+                () -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "존재하지 않는 계정입니다.")
+        );
+
+        // 2. 비밀번호 검증 //
+        if (!passwordEncoder.matches(password, user.getPassword())) {
+            throw new ResponseStatusException(
+                    HttpStatus.UNAUTHORIZED, "비밀번호가 일치하지 않습니다."
+            );
+        }
+        // 3. 삭제
+        userRepository.delete(user);
+
+        // 4. 공동 응답 리턴 (데이터x) //
+        return ResponseEntity.ok(
+                AuthResponse.<Void>success("회원 탈출 성공",null));
+    }
+
 }
