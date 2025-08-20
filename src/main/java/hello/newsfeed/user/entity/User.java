@@ -29,6 +29,20 @@ public class User {
     @Column(name = "profileImage", length = 100)
     private String profileImage;
 
+    // 회원가입용 User 객체 생성 //
+    public User(String name, String email, String password) {
+        this.name = name;
+        this.email = email;
+        this.password = password;
+    }
+
+    // 소프트 딜리트 방식 //
+    private boolean deleted = false;
+
+    public void softDeleted() {
+        this.deleted = true;
+    }
+
     public void changeUsername(String username) {
         this.username = username;
     }
