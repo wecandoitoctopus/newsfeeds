@@ -29,7 +29,10 @@ public class FollowService {
         if (Objects.equals(targetUserId, userId)) {
             throw new RuntimeException("자기 자신을 팔로우 할 수 없습니다.");
         }
-        // 이미 팔로우 중인지 확인 >> 쿼리 메서드 사용해야해서 나중에,,,
+        // 이미 팔로우 중인지 확인
+        if (followsRepository.existsByFollowerIdAndFollowingId(userId, targetUserId)) {
+            throw new RuntimeException("이미 팔로우 중입니다.");
+        }
 
        User following = userRepository.findById(targetUserId).orElseThrow(
                () -> new RuntimeException("해당 유저는 존재하지 않습니다.")
@@ -78,7 +81,9 @@ public class FollowService {
         List<Follow> followerList = followsRepository.findByFollowingId(userId);
         for (Follow follow : followerList) {
             ResponseFollowers responseFollowers = new ResponseFollowers(
-                    follow.getId()
+                    follow.getFollower().getId(), // 이름 프로필사진
+                    follow.getFollower().getUsername(),
+                    follow.getFollower().getProfileImage()
             );
             followersReadResponseList.add(responseFollowers);
         }
@@ -93,7 +98,9 @@ public class FollowService {
         List<Follow> followingList = followsRepository.findByFollowerId(userId);
         for (Follow follow : followingList) {
             ResponseFollowing responseFollowing = new ResponseFollowing(
-                    follow.getId()
+                    follow.getFollowing().getId(),
+                    follow.getFollowing().getUsername(),
+                    follow.getFollowing().getProfileImage()
             );
             followingReadResponseList.add(responseFollowing);
         }
