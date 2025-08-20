@@ -99,7 +99,7 @@ public class AuthService {
             );
         }
         // 3. 삭제
-        userRepository.delete(user);
+        user.softDeleted();   // -> 소프트 딜리트
 
         // 4. 공동 응답 리턴 (데이터x) //
         return ResponseEntity.ok(
