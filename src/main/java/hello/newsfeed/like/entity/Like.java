@@ -1,5 +1,6 @@
 package hello.newsfeed.like.entity;
 
+import hello.newsfeed.BaseEntity;
 import hello.newsfeed.post.entity.Post;
 import hello.newsfeed.user.entity.User;
 import jakarta.persistence.*;
@@ -20,31 +21,22 @@ import java.security.Timestamp;
         uniqueConstraints = {
                 @UniqueConstraint(
                         name = "likes",
-                        columnNames={"post_id", "user_id"}
+                        columnNames={"post_Id", "user_Id"}
                 )
         }
 )
-public class Like {
-
-//    @Transient // 칼럼이 만들어지지 않는다.
-//    private Long likeCount;
-//
-//    @Transient
-//    private boolean likeState;
+public class Like extends BaseEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "post_id")
+    @JoinColumn(name = "post_Id")
     private Post post;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_Id")
     private User user;
-
-//    @CreationTimestamp
-//    private Timestamp createAt;
 
     public Like(User user, Post post) {
         this.user = user;

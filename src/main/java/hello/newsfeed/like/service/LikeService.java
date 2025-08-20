@@ -16,38 +16,37 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class LikeService {
 
-    //속성 + final 자동 생성 의존성 주입
     private final UserRepository userRepository;
     private final PostRepository postRepository;
     private final LikeRepository likeRepository;
 
-    //기
     public LikeResponse toggleLike(Long userId, Long postId) {
-
         User user = userRepository.findById(userId).orElseThrow();
         Post post = postRepository.findById(postId).orElseThrow();
 
-        boolean liked = likeRepository.existsByUserAndPostId(user, postId);
+        boolean wasLiked = likeRepository.existsByUserIdAndPostId(userId, postId);
 
-        if (liked) {
-            //좋아요가 이미 했으면 취소
+        if (wasLiked) {
+            // 좋아요가 이미 있으면 취소
             likeRepository.UnLike(userId, postId);
         } else {
-            //좋아요가 없으면 추가
+            // 좋아요가 없으면 추가
             likeRepository.Like(userId, postId);
         }
 
+        // 상태를 반환
+        boolean currentLiked = !wasLiked;
         Long likeCount = likeRepository.countByPostId(postId);
-        return new LikeResponse(liked, likeCount);
+
+        return new LikeResponse(currentLiked, likeCount);
     }
 
-//    public LikeResponse getLikeInfo(Long userId, Long postId) {
-//
-//        postRepository.findById(postId).orElseThrow();
-//
-//        boolean liked = likeRepository.existByUserIdAndPostId(userId, postId);
-//        Long likeCount = likeRepository.countByPostId(postId);
-//
-//        return new LikeResponse(liked, likeCount);
-//    }
+    @Transactional(readOnly = true)
+    public LikeResponse getLikeInfo(Long userId, Long postId) {
+
+        boolean liked = likeRepository.existsByUserIdAndPostId(userId, postId);
+        Long likeCount = likeRepository.countByPostId(postId);
+
+        return new LikeResponse(liked, likeCount);
+    }
 }
