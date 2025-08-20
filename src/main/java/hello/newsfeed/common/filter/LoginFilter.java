@@ -1,4 +1,4 @@
-package hello.common.filter;
+package hello.newsfeed.common.filter;
 
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;

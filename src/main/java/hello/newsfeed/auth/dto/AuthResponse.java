@@ -1,4 +1,4 @@
-package hello.auth.dto;
+package hello.newsfeed.auth.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;

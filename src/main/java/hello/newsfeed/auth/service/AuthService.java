@@ -1,14 +1,17 @@
-package hello.auth.service;
+package hello.newsfeed.auth.service;
 
-import hello.auth.dto.AuthRequest;
-import hello.auth.dto.AuthResponse;
-import hello.auth.dto.SignResponse;
-import hello.common.config.PasswordEncoder;
+import hello.newsfeed.auth.dto.AuthRequest;
+import hello.newsfeed.auth.dto.AuthResponse;
+import hello.newsfeed.auth.dto.SignResponse;
+import hello.newsfeed.common.config.PasswordEncoder;
 import hello.newsfeed.user.entity.User;
 import hello.newsfeed.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 @Service
 @RequiredArgsConstructor
@@ -25,15 +28,24 @@ public class AuthService {
     // 회원가입 //
     @Transactional
     public SignResponse save(AuthRequest authRequest) {
-        // 중복 이메일 예외처리 //
-        if (userRepository.existsByEmail(authRequest.getEmail())) {
+        // 중복 이메일 예외처리 // -500에러
+        // if (userRepository.existsByEmail(authRequest.getEmail())) {           -> 하드 딜리트
+        //    throw new IllegalArgumentException("해당 이메일은 이미 사용중입니다.");
+        //}
+        // 사용 중인 이메일 예외처리 (탈퇴x)
+        if (userRepository.existsByEmailAndDeletedFalse(authRequest.getEmail())) {  // -> 소프트 딜리트
             throw new IllegalArgumentException("해당 이메일은 이미 사용중입니다.");
         }
-        // 이메일 형식 예외처리 //
+        // 이미 탈퇴한 이메일 예외처리 (재가입 불가)  -> 최종 추가  => 소프트 딜리트
+        if (userRepository.existsByEmail(authRequest.getEmail())) {
+            throw new IllegalArgumentException("이미 탈퇴한 이메일입니다. 재가입할 수 없습니다.");
+        }
+
+        // 이메일 형식 예외처리 // - 400에러
         if (authRequest.getEmail() == null || !authRequest.getEmail().matches(EMAIL_REGEX)) {
             throw new IllegalArgumentException("이메일 형식이 올바르지 않습니다.");
         }
-        // 비밀번호 형식 예외처리 //
+        // 비밀번호 형식 예외처리 // - 400에러
         if (authRequest.getPassword() == null || !authRequest.getPassword().matches(PASSWORD_REGEX)) {
             throw new IllegalArgumentException("비밀번호 형식이 올바르지 않습니다.");
         }
@@ -48,5 +60,4 @@ public class AuthService {
                 user.getEmail()
         );
     }
-
 }

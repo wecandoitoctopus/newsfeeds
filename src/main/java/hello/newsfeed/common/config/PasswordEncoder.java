@@ -1,4 +1,4 @@
-package hello.common.config;
+package hello.newsfeed.common.config;
 
 import at.favre.lib.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Component;

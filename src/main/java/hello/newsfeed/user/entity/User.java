@@ -24,4 +24,11 @@ public class User {
         this.email = email;
         this.password = password;
     }
+
+    // 소프트 딜리트 방식 //
+    private boolean deleted = false;
+
+    public void softDeleted() {
+        this.deleted = true;
+    }
 }

@@ -1,4 +1,4 @@
-package hello.auth.dto;
+package hello.newsfeed.auth.dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
