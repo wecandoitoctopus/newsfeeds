@@ -6,12 +6,15 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User, Long> {
-    // 회원가입 - 이메일 중복 검증용 //
+    // 회원가입 - 이메일 중복 체크 //
     boolean existsByEmailAndDeletedFalse(String email);  // -> 소프트딜리트용 (탈퇴안한 이메일만 확인)
 
-    // 이메일로 단건 조회 - 로그인//
+    // 로그인 시 이메일 조회 - 탈퇴 계정 로그인 불가//
     Optional<User> findByEmailAndDeletedFalse(String email);  // -> 소프트딜리트용
 
-    // 모든 이메일(탈퇴 포함) 확인
-    boolean existsByEmail(String email); // -> 소프트딜리트용 (탈퇴 포함 모든 이메일 확인)
+    // 모든 이메일(탈퇴 포함) 확인 - 아이디(이메일) 재사용 불가//
+    boolean existsByEmail(String email);
+
+    // 탈퇴 포함 전체 유저 찾기 //
+    Optional<User> findByEmail(String email);
 }

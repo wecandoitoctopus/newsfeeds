@@ -7,6 +7,7 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)    // NULL 값 제외
+// <T> -> 실제 데이터
 public class SignResponse {
 
     private final Long id;

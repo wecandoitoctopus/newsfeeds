@@ -34,11 +34,12 @@ public class AuthController {
             @RequestBody AuthRequest authRequest,
             HttpServletRequest request
     ) {
-        // Cookie Session 발급 //
         SignResponse result = authService.login(authRequest);
 
+        // Cookie Session 발급 //
         HttpSession session = request.getSession();
         session.setAttribute("LOGIN_USER", result.getId());
+
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(AuthResponse.success("로그인 성공", result));
     }
@@ -55,6 +56,7 @@ public class AuthController {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "로그인이 필요합니다.");
         }
 
+        // 타입변환(Long) 표시 필요 -> session.getAttribute(String) = 원래 리턴 타입 object
         Long userId = (Long) session.getAttribute("LOGIN_USER");
 
         // 서비스 호출

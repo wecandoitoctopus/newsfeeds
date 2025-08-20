@@ -28,28 +28,28 @@ public class AuthService {
     // 회원가입 //
     @Transactional
     public SignResponse save(AuthRequest authRequest) {
-        // 중복 이메일 예외처리 // -500에러
-        // if (userRepository.existsByEmail(authRequest.getEmail())) {           -> 하드 딜리트
-        //    throw new IllegalArgumentException("해당 이메일은 이미 사용중입니다.");
-        //}
-        // 사용 중인 이메일 예외처리 (탈퇴x)
+
+        // 사용 중인 이메일 예외처리 (탈퇴x) - 500
         if (userRepository.existsByEmailAndDeletedFalse(authRequest.getEmail())) {  // -> 소프트 딜리트
             throw new IllegalArgumentException("해당 이메일은 이미 사용중입니다.");
         }
-        // 이미 탈퇴한 이메일 예외처리 (재가입 불가)  -> 최종 추가  => 소프트 딜리트
+
+        // 이미 탈퇴한 이메일 예외처리 (재가입 불가) - 500 -> 최종 추가  => 소프트 딜리트
         if (userRepository.existsByEmail(authRequest.getEmail())) {
             throw new IllegalArgumentException("이미 탈퇴한 이메일입니다. 재가입할 수 없습니다.");
         }
 
-        // 이메일 형식 예외처리 // - 400에러
+        // 이메일 형식 예외처리 - 400
         if (authRequest.getEmail() == null || !authRequest.getEmail().matches(EMAIL_REGEX)) {
             throw new IllegalArgumentException("이메일 형식이 올바르지 않습니다.");
         }
-        // 비밀번호 형식 예외처리 // - 400에러
+
+        // 비밀번호 형식 예외처리 - 400
         if (authRequest.getPassword() == null || !authRequest.getPassword().matches(PASSWORD_REGEX)) {
             throw new IllegalArgumentException("비밀번호 형식이 올바르지 않습니다.");
         }
-        // 비밀번호 인코딩 //
+
+        // 비밀번호 인코딩
         String encodedPassword = passwordEncoder.encode(authRequest.getPassword());
         User user = new User(authRequest.getName(), authRequest.getEmail(), encodedPassword);
 
@@ -62,46 +62,58 @@ public class AuthService {
     }
 
     // 로그인 //
-    @Transactional(readOnly = true)                                                    // 트랜잭션(읽기 전용)
+    @Transactional(readOnly = true)
     public SignResponse login(AuthRequest authRequest) {
-        // 하드 딜리트 //
-        // User user = userRepository.findByEmail(authRequest.getEmail()).orElseThrow(
-        //         () -> new ResponseStatusException(                                     // 이메일 불일치 -> 401 반환
-        //                 HttpStatus.UNAUTHORIZED, "이메일이 틀렸습니다.")
-        // );
 
-        User user = userRepository.findByEmailAndDeletedFalse(authRequest.getEmail()).orElseThrow(
-                () -> new ResponseStatusException(                                     // 이메일 불일치 -> 401 반환
+        // 이메일로 유저 조회 (탈퇴 포함) - 401
+        User user = userRepository.findByEmail(authRequest.getEmail())
+                .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.UNAUTHORIZED, "이메일이 틀렸습니다.")
-        );
+                );
 
+        // 탈퇴 여부 확인 - 401
+        if (user.isDeleted()) {
+            throw new ResponseStatusException(
+                    HttpStatus.UNAUTHORIZED, "이미 탈퇴한 계정입니다."
+            );
+        }
+
+        // 비밀번호 확인 - 401
         if (!passwordEncoder.matches(authRequest.getPassword(), user.getPassword())) {
             throw new ResponseStatusException(
                     HttpStatus.UNAUTHORIZED, "비밀번호가 올바르지 않습니다."
             );
         }
 
-        return new SignResponse(user.getId(), user.getName(),user.getEmail());           // 인증 성공 시 이름, 이메일 담아 반환
+        // 로그인 성공
+        return new SignResponse(user.getId(), user.getName(), user.getEmail());
     }
 
     // 회원 탈퇴 //
     @Transactional
     public ResponseEntity<AuthResponse<Void>> deleteMe(Long userId, String password) {
-        // 1. 사용자 조회 -> 계정 존재 여부 확인 //
+        // 사용자 조회 -> 계정 존재 여부 확인(비밀번호 검증시 필요)
         User user = userRepository.findById(userId).orElseThrow(
                 () -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "존재하지 않는 계정입니다.")
         );
 
-        // 2. 비밀번호 검증 //
+        // 탈퇴 계정 확인
+        if (user.isDeleted()) {
+            throw  new ResponseStatusException(
+                        HttpStatus.BAD_REQUEST, "이미 탈퇴한 계정입니다."
+            );
+        }
+
+        // 비밀번호 검증 - 401
         if (!passwordEncoder.matches(password, user.getPassword())) {
             throw new ResponseStatusException(
                     HttpStatus.UNAUTHORIZED, "비밀번호가 일치하지 않습니다."
             );
         }
-        // 3. 삭제
+        // 삭제
         user.softDeleted();   // -> 소프트 딜리트
 
-        // 4. 공동 응답 리턴 (데이터x) //
+        // 공동 응답 리턴 (데이터x)
         return ResponseEntity.ok(
                 AuthResponse.<Void>success("회원 탈출 성공",null));
     }
