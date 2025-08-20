@@ -28,4 +28,19 @@ public class AuthController {
                 .body(AuthResponse.success("회원가입 성공", result));
     }
 
+    // 로그인 //
+    @PostMapping("/auth/login")
+    public ResponseEntity<AuthResponse<SignResponse>> login(
+            @RequestBody AuthRequest authRequest,
+            HttpServletRequest request
+    ) {
+        // Cookie Session 발급 //
+        SignResponse result = authService.login(authRequest);
+
+        HttpSession session = request.getSession();
+        session.setAttribute("LOGIN_USER", result.getId());
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(AuthResponse.success("로그인 성공", result));
+    }
+
 }

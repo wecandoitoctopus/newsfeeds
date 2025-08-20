@@ -60,4 +60,27 @@ public class AuthService {
                 user.getEmail()
         );
     }
+
+    // 로그인 //
+    @Transactional(readOnly = true)                                                    // 트랜잭션(읽기 전용)
+    public SignResponse login(AuthRequest authRequest) {
+        // 하드 딜리트 //
+        // User user = userRepository.findByEmail(authRequest.getEmail()).orElseThrow(
+        //         () -> new ResponseStatusException(                                     // 이메일 불일치 -> 401 반환
+        //                 HttpStatus.UNAUTHORIZED, "이메일이 틀렸습니다.")
+        // );
+
+        User user = userRepository.findByEmailAndDeletedFalse(authRequest.getEmail()).orElseThrow(
+                () -> new ResponseStatusException(                                     // 이메일 불일치 -> 401 반환
+                        HttpStatus.UNAUTHORIZED, "이메일이 틀렸습니다.")
+        );
+
+        if (!passwordEncoder.matches(authRequest.getPassword(), user.getPassword())) {
+            throw new ResponseStatusException(
+                    HttpStatus.UNAUTHORIZED, "비밀번호가 올바르지 않습니다."
+            );
+        }
+
+        return new SignResponse(user.getId(), user.getName(),user.getEmail());           // 인증 성공 시 이름, 이메일 담아 반환
+    }
 }
