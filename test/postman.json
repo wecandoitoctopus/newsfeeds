@@ -1,0 +1,122 @@
+{
+  "info": {
+    "name": "Newsfeed API Tests",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Health Check",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/actuator/health"
+      }
+    },
+    {
+      "name": "Signup",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/auth/signup",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"alice\",\n  \"email\": \"alice@example.com\",\n  \"password\": \"Aa1!aa!1\"\n}"
+        }
+      }
+    },
+    {
+      "name": "Login",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/auth/login",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"alice@example.com\",\n  \"password\": \"Aa1!aa!1\"\n}"
+        }
+      }
+    },
+    {
+      "name": "Get Me",
+      "request": { "method": "GET", "url": "{{baseUrl}}/users/me" }
+    },
+    {
+      "name": "Get Public User",
+      "request": { "method": "GET", "url": "{{baseUrl}}/users/1" }
+    },
+    {
+      "name": "Update Me",
+      "request": {
+        "method": "PATCH",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/users/me",
+        "body": { "mode": "raw", "raw": "{\n  \"username\": \"alice_new\"\n}" }
+      }
+    },
+    {
+      "name": "Change Password - Wrong Current",
+      "request": {
+        "method": "PATCH",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/users/me/password",
+        "body": { "mode": "raw", "raw": "{\n  \"currentPassword\": \"wrongpassword\",\n  \"newPassword\": \"n3wp@ss5\"\n}" }
+      }
+    },
+    {
+      "name": "Change Password - Same As Current",
+      "request": {
+        "method": "PATCH",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/users/me/password",
+        "body": { "mode": "raw", "raw": "{\n  \"currentPassword\": \"Aa1!aa!1\",\n  \"newPassword\": \"Aa1!aa!1\"\n}" }
+      }
+    },
+    {
+      "name": "Change Password - Format Violation",
+      "request": {
+        "method": "PATCH",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/users/me/password",
+        "body": { "mode": "raw", "raw": "{\n  \"currentPassword\": \"pass\",\n  \"newPassword\": \"pass\"\n}" }
+      }
+    },
+    {
+      "name": "Change Password - Success",
+      "request": {
+        "method": "PATCH",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/users/me/password",
+        "body": { "mode": "raw", "raw": "{\n  \"currentPassword\": \"Aa1!aa!1\",\n  \"newPassword\": \"n3wp@ss5\"\n}" }
+      }
+    },
+    {
+      "name": "Change Profile Image - Blank",
+      "request": {
+        "method": "PATCH",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/users/me/profile/image",
+        "body": { "mode": "raw", "raw": "{\n  \"profileImage\": \"\"\n}" }
+      }
+    },
+    {
+      "name": "Change Profile Image - Success",
+      "request": {
+        "method": "PATCH",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/users/me/profile/image",
+        "body": { "mode": "raw", "raw": "{\n  \"profileImage\": \"https://img.example.com/u/alice.png\"\n}" }
+      }
+    },
+    {
+      "name": "Delete Me (Body Param)",
+      "request": {
+        "method": "DELETE",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/auth/me",
+        "body": { "mode": "raw", "raw": "{\n  \"password\": \"n3wp@ss5\"\n}" }
+      }
+    }
+  ],
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:8080" }
+  ]
+}
