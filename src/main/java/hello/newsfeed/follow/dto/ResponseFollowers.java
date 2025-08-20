@@ -6,15 +6,12 @@ import lombok.Getter;
 public class ResponseFollowers {
     private Long id;
     private String name;
-    private Long profileImage;
+    private String profileImage;
 
-    public ResponseFollowers(Long id, String name, Long profileImage) {
+    public ResponseFollowers(Long id, String name, String profileImage) {
         this.id = id;
         this.name = name;
         this.profileImage = profileImage;
     }
 
-    public ResponseFollowers(Long id) {
-        this.id = id;
-    }
 }
