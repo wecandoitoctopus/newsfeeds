@@ -56,7 +56,7 @@ public class AuthService {
         userRepository.save(user);
         return new SignResponse(
                 user.getId(),
-                user.getName(),
+                user.getUsername(),
                 user.getEmail()
         );
     }
@@ -86,7 +86,7 @@ public class AuthService {
         }
 
         // 로그인 성공
-        return new SignResponse(user.getId(), user.getName(), user.getEmail());
+        return new SignResponse(user.getId(), user.getUsername(), user.getEmail());
     }
 
     // 회원 탈퇴 //
