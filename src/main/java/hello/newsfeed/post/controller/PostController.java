@@ -21,9 +21,9 @@ public class PostController {
     // 피드 생성
     @PostMapping
     public ResponseEntity<PostResponse> createPost(
-            @Valid @RequestBody PostCreateRequest postCreateRequest
+            @Valid @RequestBody PostCreateRequest postCreateRequest,
+            @SessionAttribute(name = "LOGIN_USER") Long userId
     ) {
-        Long userId = 1L;
         return ResponseEntity.ok(postService.createPost(userId, postCreateRequest));
     }
 
@@ -45,18 +45,18 @@ public class PostController {
     @PutMapping("/{postId}")
     public ResponseEntity<PostResponse> updatePost(
             @PathVariable Long postId,
-            @Valid @RequestBody PostUpdateRequest postUpdateRequest
+            @Valid @RequestBody PostUpdateRequest postUpdateRequest,
+            @SessionAttribute(name = "LOGIN_USER") Long userId
     ) {
-        Long userId = 1L;
         return ResponseEntity.ok(postService.updatePost(userId, postId, postUpdateRequest));
     }
 
     // 피드 삭제
     @DeleteMapping("/{postId}")
     public ResponseEntity<Void> deletePost(
-            @PathVariable Long postId
+            @PathVariable Long postId,
+            @SessionAttribute(name = "LOGIN_USER") Long userId
     ) {
-        Long userId = 1L;
         postService.deletePost(userId, postId);
         return ResponseEntity.noContent().build();
     }
