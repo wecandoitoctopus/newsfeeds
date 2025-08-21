@@ -5,6 +5,9 @@ import hello.newsfeed.follow.dto.ResponseFollowing;
 import hello.newsfeed.follow.dto.ResponseFollowingStatus;
 import hello.newsfeed.follow.entity.Follow;
 import hello.newsfeed.follow.repository.FollowsRepository;
+import hello.newsfeed.post.dto.PostResponse;
+import hello.newsfeed.post.entity.Post;
+import hello.newsfeed.post.repository.PostRepository;
 import hello.newsfeed.user.entity.User;
 import hello.newsfeed.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor // requird : 필수의 arguments : 필드, 자원 final이 무조건 달려있어야함
@@ -21,6 +25,7 @@ public class FollowService {
 
     private final FollowsRepository followsRepository;
     private final UserRepository userRepository;
+    private final PostRepository postRepository;
 
     @Transactional
     // 매개변수는 순서가 존재한다 (순서 맞춰주기)
@@ -83,7 +88,9 @@ public class FollowService {
             ResponseFollowers responseFollowers = new ResponseFollowers(
                     follow.getFollower().getId(), // 이름 프로필사진
                     follow.getFollower().getUsername(),
-                    follow.getFollower().getProfileImage()
+                    follow.getFollower().getProfileImage(),
+                    follow.getCreatedAt(),
+                    follow.getModifiedAt()
             );
             followersReadResponseList.add(responseFollowers);
         }
@@ -100,7 +107,9 @@ public class FollowService {
             ResponseFollowing responseFollowing = new ResponseFollowing(
                     follow.getFollowing().getId(),
                     follow.getFollowing().getUsername(),
-                    follow.getFollowing().getProfileImage()
+                    follow.getFollowing().getProfileImage(),
+                    follow.getCreatedAt(),
+                    follow.getModifiedAt()
             );
             followingReadResponseList.add(responseFollowing);
         }
@@ -111,5 +120,25 @@ public class FollowService {
     public ResponseFollowingStatus isFollowing(Long userId, Long targetUserId) {
         boolean isFollowing = followsRepository.existsByFollowerIdAndFollowingId(userId, targetUserId);
         return new ResponseFollowingStatus(isFollowing);
+    }
+    
+    // 내가 팔로잉한 사람들의 게시글
+    public List<PostResponse> getPostsByFollowing(Long userId) {
+        List<Long> followingIds = getFollowingUserIds(userId);
+        List<PostResponse> postResponseList = new ArrayList<>();
+        List<Post> posts = postRepository.findByUserIdInOrderByCreatedAtDesc(followingIds);
+        for (Post post : posts) {
+            PostResponse postResponse = PostResponse.createPostResponse(post);
+            postResponseList.add(postResponse);
+        }
+        return postResponseList;
+    }
+
+    // 내가 팔로우한 유저들의 ID 목록 가져오기 (내부적으로 사용하는 코드)
+    private List<Long> getFollowingUserIds(Long userId) {
+        List<Follow> follows = followsRepository.findByFollowerId(userId);
+        return follows.stream()
+                .map(f -> f.getFollowing().getId())
+                .collect(Collectors.toList());
     }
 }
