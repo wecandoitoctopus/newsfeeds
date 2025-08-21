@@ -7,7 +7,7 @@
 ![](images/02_POST_login.png)
 
 ## GET me
-![](images/03_GET_me.pngg)
+![](images/03_GET_me.png)
 
 ## GET public
 ![](images/04_GET_public.png)
