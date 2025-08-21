@@ -1,5 +1,6 @@
 package hello.newsfeed.user.entity;
 
+import hello.newsfeed.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -11,13 +12,13 @@ import lombok.*;
 @Table(name = "user", indexes = {
         @Index(name = "user_email", columnList = "email", unique = true)
 })
-public class User {
+public class User extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
     private Long id;
 
-    @Column(length = 20, nullable = false, unique = true)
+    @Column(length = 100, nullable = false, unique = true)
     private String email;
 
     @Column(length = 15, nullable = false)

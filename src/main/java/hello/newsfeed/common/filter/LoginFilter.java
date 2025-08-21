@@ -6,12 +6,18 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.PatternMatchUtils;
+
 import java.io.IOException;
 
 @Slf4j
 public class LoginFilter implements Filter {
 
-    private static final String[] WHITE_LIST = {"/", "/auth/signup", "/auth/login"};
+    private static final String[] WHITE_LIST = {
+            "/", "/auth/signup", "/auth/login",
+//            "/v3/api-docs",
+//            "/swagger-ui.html",
+//            "/swagger-ui/*", "/swagger-ui/**"
+    };
 
     @Override
     public void doFilter(
@@ -26,6 +32,21 @@ public class LoginFilter implements Filter {
 
         if (!isWhiteList(requestURI)) {
             HttpSession session = httpRequest.getSession(false);
+//        if (isPublicProfileGet(httpRequest)) {
+//            filterChain.doFilter(servletRequest, servletResponse);
+//            return;
+        }
+
+        boolean whitelisted = isWhiteList(requestURI);
+        log.info("LoginFilter uri={}, whitelisted={}", requestURI, whitelisted);
+
+        if (whitelisted || isPublicProfileGet(httpRequest)) {
+            filterChain.doFilter(servletRequest, servletResponse);
+            return;
+        }
+
+        if (!isWhiteList(requestURI)) {                                                 // 화이트리스트 외 요청이면
+            HttpSession session = httpRequest.getSession(false);                     // 세션 조회 (없으면 null)
 
             // 로그인하지 않은 사용자인 경우
             if (session == null || session.getAttribute("LOGIN_USER") == null) {
@@ -36,8 +57,18 @@ public class LoginFilter implements Filter {
         }
         filterChain.doFilter(servletRequest, servletResponse);
     }
+
     private boolean isWhiteList(String requestURI) {
         return PatternMatchUtils.simpleMatch(WHITE_LIST, requestURI);
     }
+
+    //GET /users/{username} 허용, /users/me 제외
+    private boolean isPublicProfileGet(HttpServletRequest req) {
+        if (!"GET".equals(req.getMethod())) return false;
+        String uri = req.getRequestURI();
+        if ("/users/me".equals(uri)) return false;
+        return uri.startsWith("/users/") && uri.indexOf('/', "/users/".length()) == -1;
+    }
+
 }
 

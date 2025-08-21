@@ -9,19 +9,15 @@ import org.springframework.data.repository.query.Param;
 
 public interface LikeRepository extends JpaRepository<Like, Long> {
 
-    //조회
     Long countByPostId(@Param("postId") Long postId);
 
-    //확인
-    boolean existsByUserAndPostId(User user, Long postId);
+    boolean existsByUserIdAndPostId(Long userId, Long postId);
 
-    //추가
     @Modifying
-    @Query(value = "INSERT INTO LIKES(post_id, user_id) VALUES(:postId, :userId)", nativeQuery = true)
+    @Query(value = "INSERT INTO LIKES(post_Id, user_Id) VALUES(:postId, :userId)", nativeQuery = true)
     void Like(@Param("userId") Long userId, @Param("postId") Long postId);
 
-    //취소
     @Modifying
-    @Query(value = "DELETE FROM likes WHERE post_id = :postId AND user_id = :userId", nativeQuery = true)
+    @Query(value = "DELETE FROM likes WHERE post_Id = :postId AND user_Id = :userId", nativeQuery = true)
     void UnLike(@Param("userId") Long userId, @Param("postId") Long postId);
 }

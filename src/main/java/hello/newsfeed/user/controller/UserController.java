@@ -1,70 +1,51 @@
 package hello.newsfeed.user.controller;
 
+import hello.newsfeed.common.dto.ApiResponse;
 import hello.newsfeed.user.dto.*;
-import hello.newsfeed.user.entity.User;
-import hello.newsfeed.user.repository.UserRepository;
-import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
+import hello.newsfeed.user.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import jakarta.validation.Valid;
 
-@RequiredArgsConstructor
 @RestController
 @RequestMapping("/users")
 public class UserController {
+    private final UserService svc;
 
-    private final UserRepository users;
-
-// httpie 테스트용
-//    @PostMapping
-//    public ResponseEntity<Void> create(@RequestBody @Valid CreateUserRequest req) {
-//        if (users.existsByEmail(req.email())) return ResponseEntity.status(409).<Void>build();
-//        User u = users.save(User.builder()
-//                .email(req.email())
-//                .username(req.username())
-//                .password(req.password())
-//                .build());
-//        return ResponseEntity.created(URI.create("/users/" + u.getId())).<Void>build();
-//    }
-
+    public UserController(UserService svc) {
+        this.svc = svc;
+    }
 
     @GetMapping("/me")
-    public ResponseEntity<UserResponse> me(@RequestHeader("X-USER-ID") Long userId) {
-        return users.findById(userId)
-                .map(u -> ResponseEntity.ok(toDto(u)))
-                .orElseGet(() -> ResponseEntity.notFound().build());
+    public ApiResponse<UserResponse> me(@SessionAttribute("LOGIN_USER") Long userId) {
+        UserResponse dto = svc.getMe(userId);
+        return ApiResponse.ok("me GET 호출 성공", dto);
+    }
+
+    @GetMapping("/{username}")
+    public ApiResponse<PublicUserResponse> getPublic(@PathVariable String username){
+        PublicUserResponse dto = svc.getPublicByUsername(username);
+        return ApiResponse.ok("username GET 호출 성공", dto);
     }
 
     @PatchMapping("/me")
-    public ResponseEntity<UserResponse> patchMe(@RequestHeader("X-USER-ID") Long userId,
+    public ApiResponse<UserResponse> patchMe(@SessionAttribute("LOGIN_USER") Long userId,
                                                 @RequestBody @Valid UpdateUserPatchRequest req) {
-        return users.findById(userId).map(u -> {
-            u.changeUsername(req.username());
-            return ResponseEntity.ok(toDto(users.save(u)));
-        }).orElseGet(() -> ResponseEntity.notFound().build());
+        UserResponse dto = svc.patchMe(userId, req);
+        return ApiResponse.ok("me PATCH 호출 성공", dto);
     }
 
     @PatchMapping("/me/password")
-    public ResponseEntity<Void> patchPassword(@RequestHeader("X-USER-ID") Long userId,
-                                              @RequestBody @Valid ChangePasswordPatchRequest req) {
-        return users.findById(userId).map(u -> {
-            u.changePassword(req.newPassword());
-            users.save(u);
-            return ResponseEntity.noContent().<Void>build();
-        }).orElseGet(() -> ResponseEntity.notFound().<Void>build());
+    public ResponseEntity<Void> patchPassword(@SessionAttribute("LOGIN_USER") Long userId,
+                                                        @RequestBody @Valid ChangePasswordPatchRequest req) {
+        svc.changePassword(userId, req);
+        return ResponseEntity.noContent().build();
     }
 
     @PatchMapping("/me/profile/image")
-    public ResponseEntity<UserResponse> patchProfileImage(@RequestHeader("X-USER-ID") Long userId,
+    public ApiResponse<UserResponse> patchProfileImage(@SessionAttribute("LOGIN_USER") Long userId,
                                                           @RequestBody @Valid UpdateProfileImagePatchRequest req) {
-        return users.findById(userId).map(u -> {
-            String v = (req.profileImage() == null || req.profileImage().isBlank()) ? null : req.profileImage();
-            u.changeProfileImage(v);
-            return ResponseEntity.ok(toDto(users.save(u)));
-        }).orElseGet(() -> ResponseEntity.notFound().build());
-    }
-
-    private UserResponse toDto(User u) {
-        return new UserResponse(u.getId(), u.getEmail(), u.getUsername(), u.getProfileImage());
+        UserResponse dto = svc.updateProfileImage(userId, req);
+        return ApiResponse.ok("profileImage PATCH 호출 성공", dto);
     }
 }
