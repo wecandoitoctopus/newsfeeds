@@ -21,14 +21,14 @@ public class LoginFilter implements Filter {
 
     @Override
     public void doFilter(
-            ServletRequest servletRequest,       // 서블릿 요청
-            ServletResponse servletResponse,     // 서블릿 응답
-            FilterChain filterChain              // 다음 필터/서블릿 호출 체인
+            ServletRequest servletRequest,
+            ServletResponse servletResponse,
+            FilterChain filterChain
     ) throws IOException, ServletException {
 
-        HttpServletRequest httpRequest = (HttpServletRequest) servletRequest;           // HTTP 요청으로 다운캐스팅
+        HttpServletRequest httpRequest = (HttpServletRequest) servletRequest;
         HttpServletResponse httpResponse = (HttpServletResponse) servletResponse;
-        String requestURI = httpRequest.getRequestURI();                                // 요청 URI 추출
+        String requestURI = httpRequest.getRequestURI();
 
 //        if (isPublicProfileGet(httpRequest)) {
 //            filterChain.doFilter(servletRequest, servletResponse);
@@ -53,11 +53,11 @@ public class LoginFilter implements Filter {
                 return;
             }
         }
-        filterChain.doFilter(servletRequest, servletResponse);                          // 다음 단계로 전달
+        filterChain.doFilter(servletRequest, servletResponse);
     }
 
     private boolean isWhiteList(String requestURI) {
-        return PatternMatchUtils.simpleMatch(WHITE_LIST, requestURI);                   // 경로 매칭
+        return PatternMatchUtils.simpleMatch(WHITE_LIST, requestURI);
 
     }
 
