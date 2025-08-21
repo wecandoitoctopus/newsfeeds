@@ -25,13 +25,13 @@ public class UserService {
         return toPrivate(u);
     }
 
-    public PublicUserResponse getPublic(Long id) {
-        User u = users.findById(id).orElseThrow(() -> new BadRequestException("USER_NOT_FOUND"));
+    public PublicUserResponse getPublicByUsername(String username) {
+        User u = users.findByUsername(username).orElseThrow(() -> new BadRequestException("USER_NOT_FOUND"));
         return toPublic(u);
     }
 
     @Transactional
-    public UserResponse updateMe(Long userId, UpdateUserPatchRequest req) {
+    public UserResponse patchMe(Long userId, UpdateUserPatchRequest req) {
         User u = users.findById(userId).orElseThrow(() -> new BadRequestException("USER_NOT_FOUND"));
         u.changeUsername(req.username());
         return toPrivate(u);
@@ -50,8 +50,6 @@ public class UserService {
         u.changePassword(encoded);
         // --> 현재 비밀번호와 교체할 비밀번호가 같은 경우, 필수 구현 비밀번호 예외 처리 3번
     }
-
-
 
     @Transactional
     public UserResponse updateProfileImage(Long userId, UpdateProfileImagePatchRequest req) {
