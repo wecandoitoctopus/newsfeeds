@@ -128,7 +128,14 @@ public class FollowService {
         List<PostResponse> postResponseList = new ArrayList<>();
         List<Post> posts = postRepository.findByUserIdInOrderByCreatedAtDesc(followingIds);
         for (Post post : posts) {
-            PostResponse postResponse = PostResponse.createPostResponse(post);
+            PostResponse postResponse = PostResponse.createPostResponse(
+                    post.getId(),
+                    post.getTitle(),
+                    post.getContent(),
+                    post.getPostImage(),
+                    post.getCreatedAt(),
+                    post.getModifiedAt()
+            );
             postResponseList.add(postResponse);
         }
         return postResponseList;
