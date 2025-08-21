@@ -27,14 +27,11 @@ public class LikeService {
         boolean wasLiked = likeRepository.existsByUserIdAndPostId(userId, postId);
 
         if (wasLiked) {
-            // 좋아요가 이미 있으면 취소
             likeRepository.UnLike(userId, postId);
         } else {
-            // 좋아요가 없으면 추가
             likeRepository.Like(userId, postId);
         }
 
-        // 상태를 반환
         boolean currentLiked = !wasLiked;
         Long likeCount = likeRepository.countByPostId(postId);
 

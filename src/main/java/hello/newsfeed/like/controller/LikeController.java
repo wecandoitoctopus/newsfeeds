@@ -14,7 +14,6 @@ public class LikeController {
 
     private final LikeService likeService;
 
-    // 좋아요 토글 (좋아요 추가/취소)
     @PostMapping("/{feedId}/like")
     public ResponseEntity<LikeResponse> toggleLike(
             @PathVariable(name = "feedId") Long feedId,
@@ -24,7 +23,6 @@ public class LikeController {
         return ResponseEntity.ok(response);
     }
 
-    // 좋아요 정보 조회
     @GetMapping("/{feedId}/like")
     public ResponseEntity<LikeResponse> getLikeInfo(
             @PathVariable(name = "feedId") Long feedId,
