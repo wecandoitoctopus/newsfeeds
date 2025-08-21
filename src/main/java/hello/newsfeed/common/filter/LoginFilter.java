@@ -6,12 +6,18 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.PatternMatchUtils;
+
 import java.io.IOException;
 
 @Slf4j
 public class LoginFilter implements Filter {
 
-    private static final String[] WHITE_LIST = {"/", "/auth/signup", "/auth/login"};
+    private static final String[] WHITE_LIST = {
+            "/", "/auth/signup", "/auth/login",
+//            "/v3/api-docs",
+//            "/swagger-ui.html",
+//            "/swagger-ui/*", "/swagger-ui/**"
+    };
 
     @Override
     public void doFilter(
@@ -23,6 +29,19 @@ public class LoginFilter implements Filter {
         HttpServletRequest httpRequest = (HttpServletRequest) servletRequest;           // HTTP 요청으로 다운캐스팅
         HttpServletResponse httpResponse = (HttpServletResponse) servletResponse;
         String requestURI = httpRequest.getRequestURI();                                // 요청 URI 추출
+
+//        if (isPublicProfileGet(httpRequest)) {
+//            filterChain.doFilter(servletRequest, servletResponse);
+//            return;
+//        }
+
+        boolean whitelisted = isWhiteList(requestURI);
+        log.info("LoginFilter uri={}, whitelisted={}", requestURI, whitelisted);
+
+        if (whitelisted || isPublicProfileGet(httpRequest)) {
+            filterChain.doFilter(servletRequest, servletResponse);
+            return;
+        }
 
         if (!isWhiteList(requestURI)) {                                                 // 화이트리스트 외 요청이면
             HttpSession session = httpRequest.getSession(false);                     // 세션 조회 (없으면 null)
@@ -36,8 +55,19 @@ public class LoginFilter implements Filter {
         }
         filterChain.doFilter(servletRequest, servletResponse);                          // 다음 단계로 전달
     }
+
     private boolean isWhiteList(String requestURI) {
         return PatternMatchUtils.simpleMatch(WHITE_LIST, requestURI);                   // 경로 매칭
+
     }
+
+    //GET /users/{username} 허용, /users/me 제외
+    private boolean isPublicProfileGet(HttpServletRequest req) {
+        if (!"GET".equals(req.getMethod())) return false;
+        String uri = req.getRequestURI();
+        if ("/users/me".equals(uri)) return false;
+        return uri.startsWith("/users/") && uri.indexOf('/', "/users/".length()) == -1;
+    }
+
 }
 
