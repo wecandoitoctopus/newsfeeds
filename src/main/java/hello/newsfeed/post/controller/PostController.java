@@ -34,7 +34,7 @@ public class PostController {
     }
 
     // 피드 단일 조회
-    @GetMapping("{postId}")
+    @GetMapping("/{postId}")
     public ResponseEntity<PostResponse> getPost(
             @PathVariable Long postId
     ) {

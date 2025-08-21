@@ -33,14 +33,31 @@ public class PostService {
                         user
                 )
         );
-        return PostResponse.createPostResponse(post);
+        return PostResponse.createPostResponse(
+                post.getId(),
+                post.getTitle(),
+                post.getContent(),
+                post.getPostImage(),
+                post.getCreatedAt(),
+                post.getModifiedAt()
+        );
     }
 
     // 피드 전체 조회
     @Transactional(readOnly = true)
     public List<PostResponse> getAll() {
         List<Post> posts = postRepository.findAll();
-        return posts.stream().map(PostResponse::createPostResponse).toList();
+        return posts.stream()
+                .map(post -> PostResponse.createPostResponse(
+                        post.getId(),
+                        post.getTitle(),
+                        post.getContent(),
+                        post.getPostImage(),
+                        post.getCreatedAt(),
+                        post.getModifiedAt()
+                        )
+                )
+                .toList();
     }
 
     // 피드 단일 조회
@@ -49,27 +66,44 @@ public class PostService {
         Post post = postRepository.findById(postId).orElseThrow(
                 () -> new EntityNotFoundException("존재하지 않는 피드입니다.")
         );
-        return PostResponse.createPostResponse(post);
+        return PostResponse.createPostResponse(
+                post.getId(),
+                post.getTitle(),
+                post.getContent(),
+                post.getPostImage(),
+                post.getCreatedAt(),
+                post.getModifiedAt()
+        );
     }
 
     // 피드 수정
     public PostResponse updatePost(Long userId, Long postId, PostUpdateRequest postUpdateRequest) {
-        User user = userRepository.getReferenceById(userId);
-        List<Post> posts = postRepository.getAllByUser(user);
         Post post = postRepository.findById(postId).orElseThrow(
                 () -> new EntityNotFoundException("존재하지 않는 피드입니다.")
         );
-        post.updateAll(postUpdateRequest);
-        return PostResponse.createPostResponse(post);
+        if(post.getUser().getId().equals(userId)) {
+            post.updateAll(postUpdateRequest.getTitle(), postUpdateRequest.getContent(), postUpdateRequest.getPostImage());
+            return PostResponse.createPostResponse(
+                    post.getId(),
+                    post.getTitle(),
+                    post.getContent(),
+                    post.getPostImage(),
+                    post.getCreatedAt(),
+                    post.getModifiedAt()
+            );
+        }
+        throw new IllegalArgumentException("자신이 작성한 피드만 수정이 가능합니다.");
     }
 
     // 피드 삭제
     public void deletePost(Long userId, Long postId) {
-        User user = userRepository.getReferenceById(userId);
-        List<Post> posts = postRepository.getAllByUser(user);
         Post post = postRepository.findById(postId).orElseThrow(
                 () -> new EntityNotFoundException("존재하지 않는 피드입니다.")
         );
-        postRepository.delete(post);
+        if(post.getUser().getId().equals(userId)) {
+            postRepository.delete(post);
+            return;
+        }
+        throw new IllegalArgumentException("자신이 작성한 피드만 수정이 가능합니다.");
     }
 }

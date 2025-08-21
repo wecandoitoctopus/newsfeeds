@@ -14,11 +14,12 @@ public class Post extends BaseEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(nullable = false)
+    @Column(nullable = false, length = 100)
     private String title;
-    @Column(nullable = false)
+    @Column(nullable = false, length = 1000)
     private String content;
     // 일단 이미지를 스트링으로 대체하겠습니다.
+    @Column(length = 100)
     private String postImage;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -35,9 +36,9 @@ public class Post extends BaseEntity {
         return new Post(title, content, postImage, user);
     }
 
-    public void updateAll(PostUpdateRequest postUpdateRequest) {
-        this.title = postUpdateRequest.getTitle();
-        this.content = postUpdateRequest.getContent();
-        this.postImage = postUpdateRequest.getPostImage();
+    public void updateAll(String title, String content, String postImage) {
+        this.title = title;
+        this.content = content;
+        this.postImage = postImage;
     }
 }

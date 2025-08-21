@@ -23,7 +23,7 @@ public class PostResponse {
         this.createdAt = createdAt;
         this.modifiedAt = modifiedAt;
     }
-    public static PostResponse createPostResponse(Post post) {
-        return new PostResponse(post.getId(), post.getTitle(), post.getContent(), post.getPostImage(), post.getCreatedAt(), post.getModifiedAt());
+    public static PostResponse createPostResponse(Long id, String title, String content, String postImage, LocalDateTime createdAt, LocalDateTime modifiedAt) {
+        return new PostResponse(id, title, content, postImage, createdAt, modifiedAt);
     }
 }
