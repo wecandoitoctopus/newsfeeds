@@ -15,29 +15,29 @@ public class LoginFilter implements Filter {
 
     @Override
     public void doFilter(
-            ServletRequest servletRequest,       // 서블릿 요청
-            ServletResponse servletResponse,     // 서블릿 응답
-            FilterChain filterChain              // 다음 필터/서블릿 호출 체인
+            ServletRequest servletRequest,
+            ServletResponse servletResponse,
+            FilterChain filterChain
     ) throws IOException, ServletException {
 
-        HttpServletRequest httpRequest = (HttpServletRequest) servletRequest;           // HTTP 요청으로 다운캐스팅
+        HttpServletRequest httpRequest = (HttpServletRequest) servletRequest;
         HttpServletResponse httpResponse = (HttpServletResponse) servletResponse;
-        String requestURI = httpRequest.getRequestURI();                                // 요청 URI 추출
+        String requestURI = httpRequest.getRequestURI();
 
-        if (!isWhiteList(requestURI)) {                                                 // 화이트리스트 외 요청이면
-            HttpSession session = httpRequest.getSession(false);                     // 세션 조회 (없으면 null)
+        if (!isWhiteList(requestURI)) {
+            HttpSession session = httpRequest.getSession(false);
 
             // 로그인하지 않은 사용자인 경우
-            if (session == null || session.getAttribute("LOGIN_USER") == null) {     // 세션 키값
+            if (session == null || session.getAttribute("LOGIN_USER") == null) {
                 // 세션은 일종의 키/벨류
                 httpResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED, "로그인 해주세요.");
                 return;
             }
         }
-        filterChain.doFilter(servletRequest, servletResponse);                          // 다음 단계로 전달
+        filterChain.doFilter(servletRequest, servletResponse);
     }
     private boolean isWhiteList(String requestURI) {
-        return PatternMatchUtils.simpleMatch(WHITE_LIST, requestURI);                   // 경로 매칭
+        return PatternMatchUtils.simpleMatch(WHITE_LIST, requestURI);
     }
 }
 

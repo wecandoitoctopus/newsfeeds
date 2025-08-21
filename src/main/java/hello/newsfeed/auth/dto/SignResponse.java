@@ -6,7 +6,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-@JsonInclude(JsonInclude.Include.NON_NULL)    // NULL 값 제외
+@JsonInclude(JsonInclude.Include.NON_NULL)
 // <T> -> 실제 데이터
 public class SignResponse {
 
