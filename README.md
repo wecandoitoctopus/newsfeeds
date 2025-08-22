@@ -24,7 +24,7 @@
 ## PATCH pw fail03
 ![](images/08_PATCH_pw_fail03.png)
 
-## PATCH pw fail
+## PATCH pw
 ![](images/09_PATCH_pw.png)
 
 ## PATCH profileImage
