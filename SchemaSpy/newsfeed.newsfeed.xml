@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<database name="newsfeed" schema="newsfeed" type="MySQL - 8.0.42-0ubuntu0.24.04.2">
+   <tables>
+      <table catalog="newsfeed" name="follow" numRows="0" remarks="" type="TABLE">
+         <column autoUpdated="true" defaultValue="null" digits="0" id="0" name="id" nullable="false" remarks="" size="19" type="BIGINT" typeCode="-5"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="follower_id" nullable="false" remarks="" size="19" type="BIGINT" typeCode="-5">
+            <parent catalog="newsfeed" column="user_id" foreignKey="FKmow2qk674plvwyb4wqln37svv" implied="false" onDeleteCascade="false" table="user"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="following_id" nullable="false" remarks="" size="19" type="BIGINT" typeCode="-5">
+            <parent catalog="newsfeed" column="user_id" foreignKey="FKqme6uru2g9wx9iysttk542esm" implied="false" onDeleteCascade="false" table="user"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="created_at" nullable="true" remarks="" size="26" type="DATETIME" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="modified_at" nullable="true" remarks="" size="26" type="DATETIME" typeCode="93"/>
+         <primaryKey column="id" sequenceNumberInPK="1"/>
+         <index name="PRIMARY" unique="true">
+            <column ascending="true" name="id"/>
+         </index>
+         <index name="FKmow2qk674plvwyb4wqln37svv" unique="false">
+            <column ascending="true" name="follower_id"/>
+         </index>
+         <index name="FKqme6uru2g9wx9iysttk542esm" unique="false">
+            <column ascending="true" name="following_id"/>
+         </index>
+      </table>
+      <table catalog="newsfeed" name="likes" numRows="0" remarks="" type="TABLE">
+         <column autoUpdated="true" defaultValue="null" digits="0" id="0" name="id" nullable="false" remarks="" size="19" type="BIGINT" typeCode="-5"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="post_id" nullable="true" remarks="" size="19" type="BIGINT" typeCode="-5">
+            <parent catalog="newsfeed" column="id" foreignKey="FKowd6f4s7x9f3w50pvlo6x3b41" implied="false" onDeleteCascade="false" table="post"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="user_id" nullable="true" remarks="" size="19" type="BIGINT" typeCode="-5">
+            <parent catalog="newsfeed" column="user_id" foreignKey="FKi2wo4dyk4rok7v4kak8sgkwx0" implied="false" onDeleteCascade="false" table="user"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="created_at" nullable="true" remarks="" size="26" type="DATETIME" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="modified_at" nullable="true" remarks="" size="26" type="DATETIME" typeCode="93"/>
+         <primaryKey column="id" sequenceNumberInPK="1"/>
+         <index name="PRIMARY" unique="true">
+            <column ascending="true" name="id"/>
+         </index>
+         <index name="FKi2wo4dyk4rok7v4kak8sgkwx0" unique="false">
+            <column ascending="true" name="user_id"/>
+         </index>
+         <index name="likes" unique="true">
+            <column ascending="true" name="post_id"/>
+            <column ascending="true" name="user_id"/>
+         </index>
+      </table>
+      <table catalog="newsfeed" name="post" numRows="0" remarks="" type="TABLE">
+         <column autoUpdated="true" defaultValue="null" digits="0" id="0" name="id" nullable="false" remarks="" size="19" type="BIGINT" typeCode="-5">
+            <child catalog="newsfeed" column="post_id" foreignKey="FKowd6f4s7x9f3w50pvlo6x3b41" implied="false" onDeleteCascade="false" table="likes"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="created_at" nullable="true" remarks="" size="26" type="DATETIME" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="modified_at" nullable="true" remarks="" size="26" type="DATETIME" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="content" nullable="false" remarks="" size="1000" type="VARCHAR" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="post_image" nullable="true" remarks="" size="100" type="VARCHAR" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="5" name="title" nullable="false" remarks="" size="100" type="VARCHAR" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="6" name="user_id" nullable="false" remarks="" size="19" type="BIGINT" typeCode="-5">
+            <parent catalog="newsfeed" column="user_id" foreignKey="FK72mt33dhhs48hf9gcqrq4fxte" implied="false" onDeleteCascade="false" table="user"/>
+         </column>
+         <primaryKey column="id" sequenceNumberInPK="1"/>
+         <index name="PRIMARY" unique="true">
+            <column ascending="true" name="id"/>
+         </index>
+         <index name="FK72mt33dhhs48hf9gcqrq4fxte" unique="false">
+            <column ascending="true" name="user_id"/>
+         </index>
+      </table>
+      <table catalog="newsfeed" name="user" numRows="1" remarks="" type="TABLE">
+         <column autoUpdated="true" defaultValue="null" digits="0" id="0" name="user_id" nullable="false" remarks="" size="19" type="BIGINT" typeCode="-5">
+            <child catalog="newsfeed" column="follower_id" foreignKey="FKmow2qk674plvwyb4wqln37svv" implied="false" onDeleteCascade="false" table="follow"/>
+            <child catalog="newsfeed" column="following_id" foreignKey="FKqme6uru2g9wx9iysttk542esm" implied="false" onDeleteCascade="false" table="follow"/>
+            <child catalog="newsfeed" column="user_id" foreignKey="FKi2wo4dyk4rok7v4kak8sgkwx0" implied="false" onDeleteCascade="false" table="likes"/>
+            <child catalog="newsfeed" column="user_id" foreignKey="FK72mt33dhhs48hf9gcqrq4fxte" implied="false" onDeleteCascade="false" table="post"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="deleted" nullable="false" remarks="" size="1" type="BIT" typeCode="-7"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="email" nullable="false" remarks="" size="100" type="VARCHAR" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="password" nullable="false" remarks="" size="100" type="VARCHAR" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="profile_image" nullable="true" remarks="" size="100" type="VARCHAR" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="5" name="username" nullable="false" remarks="" size="15" type="VARCHAR" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="6" name="created_at" nullable="true" remarks="" size="26" type="DATETIME" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="7" name="modified_at" nullable="true" remarks="" size="26" type="DATETIME" typeCode="93"/>
+         <primaryKey column="user_id" sequenceNumberInPK="1"/>
+         <index name="PRIMARY" unique="true">
+            <column ascending="true" name="user_id"/>
+         </index>
+         <index name="user_email" unique="true">
+            <column ascending="true" name="email"/>
+         </index>
+      </table>
+   </tables>
+</database>
