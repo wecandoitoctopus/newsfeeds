@@ -1,6 +1,6 @@
 package hello.newsfeed.user.entity;
 
-import hello.newsfeed.BaseEntity;
+import hello.newsfeed.common.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -27,17 +27,16 @@ public class User extends BaseEntity {
     @Column(length = 100, nullable = false)
     private String password;
 
-    @Column(name = "profileImage", length = 100)
+    @Column(length = 100)
     private String profileImage;
 
-    // 회원가입용 User 객체 생성 //
     public User(String username, String email, String password) {
         this.username = username;
         this.email = email;
         this.password = password;
     }
 
-    // 소프트 딜리트 방식 //
+    @Builder.Default
     private boolean deleted = false;
 
     public void softDeleted() {

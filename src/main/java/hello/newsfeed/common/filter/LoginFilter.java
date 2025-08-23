@@ -14,9 +14,11 @@ public class LoginFilter implements Filter {
 
     private static final String[] WHITE_LIST = {
             "/", "/auth/signup", "/auth/login",
-//            "/v3/api-docs",
-//            "/swagger-ui.html",
-//            "/swagger-ui/*", "/swagger-ui/**"
+            "/v3/api-docs",
+            "/v3/api-docs/**",
+            "/swagger-ui.html",
+            "/swagger-ui/**",
+            "/auth/**"
     };
 
     @Override
@@ -29,11 +31,6 @@ public class LoginFilter implements Filter {
         HttpServletRequest httpRequest = (HttpServletRequest) servletRequest;
         HttpServletResponse httpResponse = (HttpServletResponse) servletResponse;
         String requestURI = httpRequest.getRequestURI();
-
-//        if (isPublicProfileGet(httpRequest)) {
-//            filterChain.doFilter(servletRequest, servletResponse);
-//            return;
-//        }
 
         boolean whitelisted = isWhiteList(requestURI);
         log.info("LoginFilter uri={}, whitelisted={}", requestURI, whitelisted);

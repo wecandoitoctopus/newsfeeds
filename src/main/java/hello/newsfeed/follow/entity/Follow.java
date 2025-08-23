@@ -1,6 +1,6 @@
 package hello.newsfeed.follow.entity;
 
-import hello.newsfeed.BaseEntity;
+import hello.newsfeed.common.entity.BaseEntity;
 import hello.newsfeed.user.entity.User;
 import jakarta.persistence.*;
 import lombok.Getter;

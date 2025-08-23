@@ -1,6 +1,6 @@
 package hello.newsfeed.like.entity;
 
-import hello.newsfeed.BaseEntity;
+import hello.newsfeed.common.entity.BaseEntity;
 import hello.newsfeed.post.entity.Post;
 import hello.newsfeed.user.entity.User;
 import jakarta.persistence.*;
@@ -8,8 +8,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.CreationTimestamp;
-import java.security.Timestamp;
 
 @Builder
 @Getter

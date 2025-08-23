@@ -3,11 +3,10 @@ package hello.newsfeed.user.service;
 import hello.newsfeed.user.dto.*;
 import hello.newsfeed.user.entity.User;
 import hello.newsfeed.user.repository.UserRepository;
-import hello.newsfeed.common.config.PasswordEncoder;
 import hello.newsfeed.common.exception.BadRequestException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 
 
 @Service

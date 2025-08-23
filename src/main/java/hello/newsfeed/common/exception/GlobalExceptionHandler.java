@@ -41,12 +41,12 @@ public class GlobalExceptionHandler {
     }
     @ExceptionHandler(Exception.class)
     public ResponseEntity<?> fallback(Exception e, HttpServletRequest request) {
-//        String uri = request.getRequestURI();
-//
-//        if (uri.startsWith("/v3/api-docs") || uri.startsWith("/swagger-ui")) {
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-//                    .body(e.getMessage());
-//        }
+        String uri = request.getRequestURI();
+
+        if (uri.startsWith("/v3/api-docs") || uri.startsWith("/swagger-ui")) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(e.getMessage());
+        }
         return body(HttpStatus.INTERNAL_SERVER_ERROR, "SERVER ERROR");
     }
 }

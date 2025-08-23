@@ -1,14 +1,12 @@
 package hello.newsfeed.auth.service;
 
 import hello.newsfeed.auth.dto.AuthRequest;
-import hello.newsfeed.auth.dto.AuthResponse;
 import hello.newsfeed.auth.dto.SignResponse;
-import hello.newsfeed.common.config.PasswordEncoder;
 import hello.newsfeed.user.entity.User;
 import hello.newsfeed.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;

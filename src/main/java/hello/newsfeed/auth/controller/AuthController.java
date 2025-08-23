@@ -4,7 +4,7 @@ import hello.newsfeed.auth.dto.AuthRequest;
 import hello.newsfeed.auth.dto.AuthResponse;
 import hello.newsfeed.auth.dto.SignResponse;
 import hello.newsfeed.auth.service.AuthService;
-import hello.newsfeed.common.ResponseMessage;
+import hello.newsfeed.common.dto.ResponseMessage;
 import hello.newsfeed.common.constant.SessionConstant;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
