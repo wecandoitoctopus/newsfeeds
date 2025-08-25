@@ -195,8 +195,8 @@
 | 방법     | 엔드포인트            | 설명         | 인증 여부 |
 |--------|-----------------------|------------|-------|
 | GET    | `/posts`              | 모든 게시물 검색  | O     |
-| POST   | `/posts`              | 새로운 게시물 생성 | X     |
-| GET    | `/posts/{postId}`     | 특정 게시물 검색  | X     |
+| POST   | `/posts`              | 새로운 게시물 생성 | O     |
+| GET    | `/posts/{postId}`     | 특정 게시물 검색  | O     |
 | PUT    | `/posts/{postId}`     | 기존 게시물 업데이트 | O     |
 | DELETE | `/posts/{postId}`     | 게시물 삭제     | O     |
 
@@ -223,16 +223,15 @@
 
 ---
 
-## POST /posts?userId={userId}
+## POST /posts
 * 게시물 만들기
 * 인증된 사용자를 작성자로 하여 새로운 게시물을 만듭니다.
 
 ---
 
-## GET/ posts?{postid}
+## GET/ posts
 * 모든 게시물 검색
 * 시스템의 모든 게시물을 검색합니다.
-* 이 엔드포인트는 인증이 필요하지 않습니다.
 
 ---
 
@@ -242,14 +241,14 @@
 
 ---
 
-## PUT /posts/{postId}?userId={userId}
+## PUT /posts/{postId}
 * 업데이트 게시물
 * 기존 게시물을 업데이트합니다.
 * 게시물 작성자만 자신의 게시물을 업데이트할 수 있습니다.
 
 ---
 
-## DELETE /posts/{postId}?userId={userId}
+## DELETE /posts/{postId}
 * 게시물을 삭제합니다. 
 * 게시물 작성자만 자신의 게시물을 삭제할 수 있습니다.
 * 응답: 200 OK (빈 응답 본문)
